@@ -22,12 +22,12 @@ const styles = StyleSheet.create({
     button: {
         backgroundColor: COLORS.PRIMARY,
         width: '100%',
-        paddingVertical: 12,
-        paddingHorizontal: 24
+        paddingVertical: 12
     },
     buttonText: {
         color: '#fff',
-        fontSize: 18,
-        fontWeight: 'bold'
+        fontSize: 20,
+        fontWeight: 'bold',
+        textAlign: 'center'
     }
 });

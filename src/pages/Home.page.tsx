@@ -17,7 +17,7 @@ export default function HomePage() {
 
       <View style={styles.wrapperButton}>
         <ButtonComponent
-          text="Start"
+          text="START"
           onPress={() => console.log("Clicked")} 
         />
       </View>
@@ -33,6 +33,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   wrapperButton: {
-    width: '100$'
+    width: '100%'
   }
 });
