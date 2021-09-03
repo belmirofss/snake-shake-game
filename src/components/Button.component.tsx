@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { COLORS } from '../theme/Colors.constant';
+import { FONTS } from '../theme/Fonts.constant';
 import { SHADOW } from '../theme/Shadow.constant';
 
 interface ButtonComponentProps {
@@ -28,8 +29,8 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         color: '#fff',
-        fontSize: 20,
-        fontWeight: 'bold',
-        textAlign: 'center'
+        fontSize: 28,
+        textAlign: 'center',
+        fontFamily: FONTS.REGULAR
     }
 });

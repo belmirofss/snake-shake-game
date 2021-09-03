@@ -3,6 +3,8 @@ import { StyleSheet, Text, View } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import ButtonComponent from '../components/Button.component';
 import LOGO from '../images/logo.png';
+import { FONTS } from '../theme/Fonts.constant';
+
 
 export default function HomePage() {
 
@@ -15,7 +17,7 @@ export default function HomePage() {
         />
 
         <Text style={styles.messageText}>
-          Play the classic snake game in a different way. Use your smartphone0 sensors to move the snake. Shake your smartphone!
+          Play the classic snake game in a different way. Use your smartphone sensors to move the snake. Shake your smartphone!
         </Text>
       </View>
 
@@ -40,8 +42,9 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   messageText: {
-    fontSize: 18,
-    textAlign: 'center'
+    fontSize: 20,
+    textAlign: 'center',
+    fontFamily: FONTS.REGULAR
   },
   wrapperButton: {
     width: '100%'
