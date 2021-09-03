@@ -3,5 +3,6 @@ export const COLORS = {
     SECONDARY: '#ffde59',
     TERTIARY: '#ff1616',
 
-    BOARD_BACKGROUND: '#FFEC9E'
+    BOARD_BACKGROUND: '#FFE680',
+    SQUARE_DIVIDER: '#BD9700'
 }

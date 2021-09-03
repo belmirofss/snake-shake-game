@@ -43,6 +43,7 @@ export default function BoardComponent() {
     useEffect(() => {
         createBoard();
         listenGyroscope();
+        Gyroscope.setUpdateInterval(500);
         return () => removeListeningGyroscope();
     }, []);
 
@@ -68,18 +69,18 @@ export default function BoardComponent() {
 
 const styles = StyleSheet.create({
     board: {
-        width: BOARD_SIZE * SQUARE_SIZE,
-        ... SHADOW.LEVEL_1
+        ... SHADOW.LEVEL_1,
+        backgroundColor: COLORS.BOARD_BACKGROUND,
+        width: BOARD_SIZE * SQUARE_SIZE
     },
     row: {
         height: SQUARE_SIZE,
-        backgroundColor: COLORS.BOARD_BACKGROUND,
         flexDirection: 'row'
     },
     boardPiece: {
         width: SQUARE_SIZE,
         height: SQUARE_SIZE,
-        borderWidth: 1,
-        borderColor: COLORS.SECONDARY
+        borderWidth: 0.75,
+        borderColor: COLORS.SQUARE_DIVIDER
     }
 });
