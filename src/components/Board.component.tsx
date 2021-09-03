@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { COLORS } from '../theme/Colors.constant';
+import { SHADOW } from '../theme/Shadow.constant';
+
+const BOARD_SIZE = 15;
+const SQUARE_SIZE = 24;
 
 export default function BoardComponent() {
-
-    const BOARD_SIZE = 18;
 
     const [board, setBoard] = useState<boolean[][]>([]);
 
@@ -33,12 +36,10 @@ export default function BoardComponent() {
                         key={`ROW_${index}`}
                         style={styles.row}>
                         {
-                            row.map((boardPiece, index) => {
-                                <View 
-                                    key={`BOARD_PIEACE_${index}`}
-                                    style={styles.boardPiece}>
-                                </View>
-                            })
+                            row.map((boardPiece, index) => <View 
+                                key={`BOARD_PIEACE_${index}`}
+                                style={styles.boardPiece}>
+                            </View>)
                         }
                     </View>
                 ))
@@ -49,16 +50,18 @@ export default function BoardComponent() {
 
 const styles = StyleSheet.create({
     board: {
-        backgroundColor: '#000',
-        width: '100%'
+        width: BOARD_SIZE * SQUARE_SIZE,
+        ... SHADOW.LEVEL_1
     },
     row: {
-        height: 26
+        height: SQUARE_SIZE,
+        backgroundColor: COLORS.BOARD_BACKGROUND,
+        flexDirection: 'row'
     },
     boardPiece: {
-        width: 24,
-        height: 24,
+        width: SQUARE_SIZE,
+        height: SQUARE_SIZE,
         borderWidth: 1,
-        borderColor: 'gainsboro'   
+        borderColor: COLORS.SECONDARY
     }
 });
