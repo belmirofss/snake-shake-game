@@ -2,6 +2,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import HomePage from '../pages/Home.page';
+import GamePage from '../pages/Game.page';
 
 export default function Routes() {
 
@@ -13,14 +14,17 @@ export default function Routes() {
                 cardStyle: {
                     backgroundColor: '#fff',
                     padding: 24
-                }
+                },
+                headerShown: false
             }}>
                 <StackNavigator.Screen 
                     name="HomePage" 
                     component={HomePage}
-                    options={{
-                        headerShown: false
-                    }}
+                />
+
+                <StackNavigator.Screen 
+                    name="GamePage" 
+                    component={GamePage}
                 />
             </StackNavigator.Navigator>
         </NavigationContainer>

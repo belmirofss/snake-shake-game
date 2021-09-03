@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/core';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
@@ -7,6 +8,10 @@ import { FONTS } from '../theme/Fonts.constant';
 
 
 export default function HomePage() {
+
+  const navigation = useNavigation();
+
+  const startGameclick = () => navigation.navigate('GamePage');
 
   return (
     <View style={styles.container}>
@@ -24,7 +29,7 @@ export default function HomePage() {
       <View style={styles.wrapperButton}>
         <ButtonComponent
           text="START"
-          onPress={() => console.log("Clicked")} 
+          onPress={startGameclick} 
         />
       </View>
     </View>
