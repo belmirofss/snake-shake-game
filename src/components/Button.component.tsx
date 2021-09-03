@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { COLORS } from '../theme/Colors.constant';
+import { SHADOW } from '../theme/Shadow.constant';
 
 interface ButtonComponentProps {
     text: string;
@@ -22,7 +23,8 @@ const styles = StyleSheet.create({
     button: {
         backgroundColor: COLORS.PRIMARY,
         width: '100%',
-        paddingVertical: 12
+        paddingVertical: 12,
+        ... SHADOW.LEVEL_1
     },
     buttonText: {
         color: '#fff',
