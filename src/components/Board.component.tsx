@@ -2,62 +2,101 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { COLORS } from '../theme/Colors.constant';
 import { SHADOW } from '../theme/Shadow.constant';
-import { Gyroscope } from 'expo-sensors';
+import { DeviceMotion } from 'expo-sensors';
 import { Subscription } from '@unimodules/react-native-adapter';
+import { Board } from '../models/Board.model';
+import { Direction } from '../enums/Directions.enum';
 
-const BOARD_SIZE = 15;
 const SQUARE_SIZE = 24;
 
 export default function BoardComponent() {
 
-    const [board, setBoard] = useState<boolean[][]>([]);
-    const [subscriptionGyroscope, setSubscriptionGyroscope] = useState<Subscription | null>(null);
+    const [board, setBoard] = useState<Board>(new Board());
+    const [subscriptionDeviceMotion, setSubscriptionDeviceMotion] = useState<Subscription | null>(null);
 
-    const createBoard = () => {
-        const createdBoard: boolean[][] = [];
+    const setupGame = () => {
+        listenDeviceMotion();
+        DeviceMotion.setUpdateInterval(10000);
+        // updateSnakePosition();
+    }
 
-        for (let i = 0; i < BOARD_SIZE; i++) {
-            createdBoard[i] = [];
-
-            for (let j = 0; j < BOARD_SIZE; j++) {
-                createdBoard[i][j] = false;
-            } 
+    const getBoardPieceColor = (rowIndex: number, pieceIndex: number) => {    
+        if (board.snake.isHead(rowIndex, pieceIndex)) {
+            return COLORS.PRIMARY;
         }
 
-        setBoard(createdBoard);
-    };
+        if (board.snake.isPart(rowIndex, pieceIndex)) {
+            return COLORS.SECONDARY;
+        }
+    }
 
-    const listenGyroscope = () => {
-        setSubscriptionGyroscope(
-          Gyroscope.addListener(gyroscopeData => {
-            console.log(gyroscopeData);
+    const updateSnakePosition = () => {
+        const newHeadPosition = getNewHeadPosition();
+
+        const oldTail = board.snake.parts.pop();
+
+        if (oldTail) {
+            board.rows[oldTail.y][oldTail.x] = false;
+        }
+        
+        board.snake.parts.unshift(newHeadPosition);
+        board.rows[newHeadPosition.y][newHeadPosition.x] = true;
+
+        board.snake.direction = board.snake.direction;
+
+        setTimeout(() => {
+            updateSnakePosition();
+        }, 250);
+    }
+
+    const getNewHeadPosition = () => {
+        const newHead = Object.assign({}, board.snake.parts[0]);
+
+        if (board.snake.direction === Direction.LEFT) {
+            newHead.x -= 1;
+        } else if (board.snake.direction === Direction.RIGHT) {
+            newHead.x += 1;
+        } else if (board.snake.direction === Direction.UP) {
+            newHead.y -= 1;
+        } else if (board.snake.direction === Direction.DOWN) {
+            newHead.y += 1;
+        }
+
+        return newHead;
+    }
+
+    const listenDeviceMotion = () => {
+        setSubscriptionDeviceMotion(
+          DeviceMotion.addListener(deviceMotionData => {
+            console.log(deviceMotionData.rotation);
           })
         );
     };
 
-    const removeListeningGyroscope = () => {
-        subscriptionGyroscope && subscriptionGyroscope.remove();
-        setSubscriptionGyroscope(null);
+    const removeListeningDeviceMotion = () => {
+        subscriptionDeviceMotion && subscriptionDeviceMotion.remove();
+        setSubscriptionDeviceMotion(null);
     };
 
     useEffect(() => {
-        createBoard();
-        listenGyroscope();
-        Gyroscope.setUpdateInterval(500);
-        return () => removeListeningGyroscope();
+        setupGame();
+        return () => removeListeningDeviceMotion();
     }, []);
 
     return (
         <View style={styles.board}>
             {
-                board.map((row, index) => (
+                board.rows.map((row, rowIndex) => (
                     <View 
-                        key={`ROW_${index}`}
+                        key={`ROW_${rowIndex}`}
                         style={styles.row}>
                         {
-                            row.map((boardPiece, index) => <View 
-                                key={`BOARD_PIEACE_${index}`}
-                                style={styles.boardPiece}>
+                            row.map((piece, pieceIndex) => <View 
+                                key={`PIEACE_${pieceIndex}`}
+                                style={{
+                                    ... styles.boardPiece,
+                                    backgroundColor: getBoardPieceColor(rowIndex, pieceIndex)
+                                }}>
                             </View>)
                         }
                     </View>
@@ -71,7 +110,9 @@ const styles = StyleSheet.create({
     board: {
         ... SHADOW.LEVEL_1,
         backgroundColor: COLORS.BOARD_BACKGROUND,
-        width: BOARD_SIZE * SQUARE_SIZE
+        borderColor: '#000',
+        borderWidth: 0.75,
+        width: Board.BOARD_SIZE * SQUARE_SIZE
     },
     row: {
         height: SQUARE_SIZE,
