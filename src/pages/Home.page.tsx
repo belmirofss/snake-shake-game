@@ -18,7 +18,7 @@ export default function HomePage() {
       <View style={styles.wrapperUpperContent}>
         <AutoHeightImage
           source={LOGO}
-          width={264} 
+          width={228} 
         />
 
         <Text style={styles.messageText}>
