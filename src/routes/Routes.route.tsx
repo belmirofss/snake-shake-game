@@ -10,13 +10,16 @@ export default function Routes() {
 
     return (
         <NavigationContainer>
-            <StackNavigator.Navigator screenOptions={{
-                cardStyle: {
-                    backgroundColor: '#fff',
-                    padding: 24
-                },
-                headerShown: false
-            }}>
+            <StackNavigator.Navigator 
+                screenOptions={{
+                    cardStyle: {
+                        backgroundColor: '#fff',
+                        padding: 24
+                    },
+                    headerShown: false
+                }}
+                initialRouteName="HomePage"
+            >
                 <StackNavigator.Screen 
                     name="HomePage" 
                     component={HomePage}

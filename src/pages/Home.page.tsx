@@ -6,12 +6,11 @@ import ButtonComponent from '../components/Button.component';
 import LOGO from '../images/logo.png';
 import { FONTS } from '../theme/Fonts.constant';
 
-
 export default function HomePage() {
 
   const navigation = useNavigation();
 
-  const startGameclick = () => navigation.navigate('GamePage');
+  const startGameclick = () => navigation.navigate('GamePage' as never);
 
   return (
     <View style={styles.container}>
