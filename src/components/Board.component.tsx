@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { COLORS } from '../theme/Colors.constant';
 import { SHADOW } from '../theme/Shadow.constant';
+import { Gyroscope } from 'expo-sensors';
+import { Subscription } from '@unimodules/react-native-adapter';
 
 const BOARD_SIZE = 15;
 const SQUARE_SIZE = 24;
@@ -9,6 +11,7 @@ const SQUARE_SIZE = 24;
 export default function BoardComponent() {
 
     const [board, setBoard] = useState<boolean[][]>([]);
+    const [subscriptionGyroscope, setSubscriptionGyroscope] = useState<Subscription | null>(null);
 
     const createBoard = () => {
         const createdBoard: boolean[][] = [];
@@ -24,8 +27,23 @@ export default function BoardComponent() {
         setBoard(createdBoard);
     };
 
+    const listenGyroscope = () => {
+        setSubscriptionGyroscope(
+          Gyroscope.addListener(gyroscopeData => {
+            console.log(gyroscopeData);
+          })
+        );
+    };
+
+    const removeListeningGyroscope = () => {
+        subscriptionGyroscope && subscriptionGyroscope.remove();
+        setSubscriptionGyroscope(null);
+    };
+
     useEffect(() => {
         createBoard();
+        listenGyroscope();
+        return () => removeListeningGyroscope();
     }, []);
 
     return (
