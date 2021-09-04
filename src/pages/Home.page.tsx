@@ -1,10 +1,10 @@
 import { useNavigation } from '@react-navigation/core';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import ButtonComponent from '../components/Button.component';
+import TextMessageComponent from '../components/TextMessage.component';
 import LOGO from '../images/logo.png';
-import { FONTS } from '../theme/Fonts.constant';
 
 export default function HomePage() {
 
@@ -20,9 +20,9 @@ export default function HomePage() {
           width={228} 
         />
 
-        <Text style={styles.messageText}>
+        <TextMessageComponent>
           Play the classic snake game in a different way. Use your smartphone sensors to move the snake. Shake your smartphone!
-        </Text>
+        </TextMessageComponent>
       </View>
 
       <View style={styles.wrapperButton}>
@@ -44,11 +44,6 @@ const styles = StyleSheet.create({
   wrapperUpperContent: {
     flexDirection: 'column',
     alignItems: 'center'
-  },
-  messageText: {
-    fontSize: 20,
-    textAlign: 'center',
-    fontFamily: FONTS.REGULAR
   },
   wrapperButton: {
     width: '100%'
