@@ -59,17 +59,27 @@ export default function BoardComponent() {
     const gameOver = () => navigation.navigate('GameOverPage' as never);
 
     const listenDeviceMotion = () => {
-        DeviceMotion.setUpdateInterval(10000);
+        DeviceMotion.setUpdateInterval(250);
 
         setSubscriptionDeviceMotion(
           DeviceMotion.addListener(deviceMotionData => {
-            // console.log(deviceMotionData.rotation);
+            const { gamma } = deviceMotionData.rotation;
+            
+
+            if (gamma > 1) {
+                console.log("RIGHT", gamma);
+            }
+
+            if (gamma < -1) {
+                console.log("LEFT", gamma)
+            }
           })
         );
     };
 
     const removeListeningDeviceMotion = () => {
         subscriptionDeviceMotion && subscriptionDeviceMotion.remove();
+        DeviceMotion.removeAllListeners();
         setSubscriptionDeviceMotion(null);
     };
 
