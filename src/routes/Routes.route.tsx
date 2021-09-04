@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import HomePage from '../pages/Home.page';
 import GamePage from '../pages/Game.page';
+import GameOverPage from '../pages/GameOver.page';
 
 export default function Routes() {
 
@@ -28,6 +29,11 @@ export default function Routes() {
                 <StackNavigator.Screen 
                     name="GamePage" 
                     component={GamePage}
+                />
+
+                <StackNavigator.Screen 
+                    name="GameOverPage" 
+                    component={GameOverPage}
                 />
             </StackNavigator.Navigator>
         </NavigationContainer>

@@ -1,42 +1,37 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { COLORS } from '../theme/Colors.constant';
 import { SHADOW } from '../theme/Shadow.constant';
 import { DeviceMotion } from 'expo-sensors';
 import { Subscription } from '@unimodules/react-native-adapter';
 import { Board } from '../models/Board.model';
-import { Direction } from '../enums/Directions.enum';
+import { useFocusEffect, useNavigation } from '@react-navigation/core';
+import { Point } from '../models/Point.model';
+import { useForceUpdate } from '../hooks/useForceUpdate.hook';
 
 const SQUARE_SIZE = 24;
+const GAME_SPEED = 100;
 
 export default function BoardComponent() {
 
-    const [board, setBoard] = useState<Board>(new Board());
+    const [board, setBoard] = useState(new Board());
     const [subscriptionDeviceMotion, setSubscriptionDeviceMotion] = useState<Subscription | null>(null);
 
-    const setupGame = () => {
-        listenDeviceMotion();
-        DeviceMotion.setUpdateInterval(10000);
-        // updateSnakePosition();
-    }
-
-    const getBoardPieceColor = (rowIndex: number, pieceIndex: number) => {    
-        if (board.snake.isHead(rowIndex, pieceIndex)) {
-            return COLORS.PRIMARY;
-        }
-
-        if (board.snake.isPart(rowIndex, pieceIndex)) {
-            return COLORS.SECONDARY;
-        }
-    }
+    const navigation = useNavigation();
+    const forceUpdate = useForceUpdate();
 
     const updateSnakePosition = () => {
-        const newHeadPosition = getNewHeadPosition();
+        const newHeadPosition = board.snake.getNewHeadPosition();
+    
+        if (board.isCollision(newHeadPosition) || board.snake.isSelfCollision(newHeadPosition)) {
+            gameOver();
+            return;
+        }
 
-        const oldTail = board.snake.parts.pop();
+        const lastTail = board.snake.getLastTail();
 
-        if (oldTail) {
-            board.rows[oldTail.y][oldTail.x] = false;
+        if (lastTail) {
+            board.rows[lastTail.y][lastTail.x] = false;
         }
         
         board.snake.parts.unshift(newHeadPosition);
@@ -44,31 +39,34 @@ export default function BoardComponent() {
 
         board.snake.direction = board.snake.direction;
 
+        forceUpdate();
+
         setTimeout(() => {
+            console.log("CHAMOU");
             updateSnakePosition();
-        }, 250);
+        }, GAME_SPEED);
     }
 
-    const getNewHeadPosition = () => {
-        const newHead = Object.assign({}, board.snake.parts[0]);
-
-        if (board.snake.direction === Direction.LEFT) {
-            newHead.x -= 1;
-        } else if (board.snake.direction === Direction.RIGHT) {
-            newHead.x += 1;
-        } else if (board.snake.direction === Direction.UP) {
-            newHead.y -= 1;
-        } else if (board.snake.direction === Direction.DOWN) {
-            newHead.y += 1;
+    const getBoardPieceColor = (point: Point): string => {    
+        if (board.snake.isHead(point)) {
+            return COLORS.PRIMARY;
         }
 
-        return newHead;
+        if (board.snake.isPart(point)) {
+            return COLORS.SECONDARY;
+        }
+
+        return COLORS.BOARD_BACKGROUND;
     }
 
+    const gameOver = () => navigation.navigate('GameOverPage' as never);
+
     const listenDeviceMotion = () => {
+        DeviceMotion.setUpdateInterval(10000);
+
         setSubscriptionDeviceMotion(
           DeviceMotion.addListener(deviceMotionData => {
-            console.log(deviceMotionData.rotation);
+            // console.log(deviceMotionData.rotation);
           })
         );
     };
@@ -78,10 +76,14 @@ export default function BoardComponent() {
         setSubscriptionDeviceMotion(null);
     };
 
-    useEffect(() => {
-        setupGame();
-        return () => removeListeningDeviceMotion();
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            console.log("ENTROU")
+            listenDeviceMotion();
+            updateSnakePosition();
+            return () => removeListeningDeviceMotion();
+        }, [])
+    );
 
     return (
         <View style={styles.board}>
@@ -91,11 +93,11 @@ export default function BoardComponent() {
                         key={`ROW_${rowIndex}`}
                         style={styles.row}>
                         {
-                            row.map((piece, pieceIndex) => <View 
+                            row.map((_, pieceIndex) => <View 
                                 key={`PIEACE_${pieceIndex}`}
                                 style={{
                                     ... styles.boardPiece,
-                                    backgroundColor: getBoardPieceColor(rowIndex, pieceIndex)
+                                    backgroundColor: getBoardPieceColor(new Point(rowIndex, pieceIndex))
                                 }}>
                             </View>)
                         }
