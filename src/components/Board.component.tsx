@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { COLORS } from '../theme/Colors.constant';
 import { SHADOW } from '../theme/Shadow.constant';
@@ -8,13 +8,14 @@ import { Board } from '../models/Board.model';
 import { useFocusEffect, useNavigation } from '@react-navigation/core';
 import { Point } from '../models/Point.model';
 import { useForceUpdate } from '../hooks/useForceUpdate.hook';
+import { Snake } from '../models/Snake.model';
 
 const SQUARE_SIZE = 24;
 const GAME_SPEED = 100;
 
 export default function BoardComponent() {
 
-    const [board, setBoard] = useState(new Board());
+    const [board] = useState<Board>(new Board());
     const [subscriptionDeviceMotion, setSubscriptionDeviceMotion] = useState<Subscription | null>(null);
 
     const navigation = useNavigation();
@@ -40,11 +41,7 @@ export default function BoardComponent() {
         board.snake.direction = board.snake.direction;
 
         forceUpdate();
-
-        setTimeout(() => {
-            console.log("CHAMOU");
-            updateSnakePosition();
-        }, GAME_SPEED);
+        setTimeout(() => updateSnakePosition(), GAME_SPEED);
     }
 
     const getBoardPieceColor = (point: Point): string => {    
@@ -78,9 +75,10 @@ export default function BoardComponent() {
 
     useFocusEffect(
         useCallback(() => {
-            console.log("ENTROU")
+            board.createNewGame();
             listenDeviceMotion();
             updateSnakePosition();
+
             return () => removeListeningDeviceMotion();
         }, [])
     );

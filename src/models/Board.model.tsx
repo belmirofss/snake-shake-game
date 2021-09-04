@@ -9,6 +9,10 @@ export class Board {
     snake: Snake;
 
     constructor() {
+        this.createNewGame();
+    }
+
+    createNewGame(): void {
         this.rows = [];
         this.snake = new Snake();
 
