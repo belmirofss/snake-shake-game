@@ -8,9 +8,11 @@ interface TextMessageComponentProps {
 
 export default function TextMessageComponent(props: TextMessageComponentProps) {
     
-    return <Text style={styles.messageText}>
-        {props.children}
-    </Text>
+    return (
+        <Text style={styles.messageText}>
+            {props.children}
+        </Text>
+    );
 }
 
 const styles = StyleSheet.create({
