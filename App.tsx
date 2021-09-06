@@ -1,4 +1,3 @@
-import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Routes from './src/routes/Routes.route';
@@ -14,7 +13,7 @@ export default function App() {
   const [landscapeOrientationSetted, setLandscapeOrientationSetted] = useState(false);
 
   const setLandscapeOrientation = async () => {
-    await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE_LEFT);
+    await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE_RIGHT);
     setLandscapeOrientationSetted(true);
   }
 
@@ -29,7 +28,6 @@ export default function App() {
   return (
     <View style={styles.container}>
       <Routes />
-      <StatusBar hidden />
     </View>
   );
 }

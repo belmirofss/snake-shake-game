@@ -14,6 +14,8 @@ import { BOARD_SIZE, BOARD_SQUARE_SIZE, GAME_SPEED } from '../constants/GameConf
 
 export default function BoardComponent() {
 
+    let betaIsReseted = true;
+
     const [board] = useState<Board>(new Board());
     const [subscriptionDeviceMotion, setSubscriptionDeviceMotion] = useState<Subscription | null>(null);
 
@@ -21,6 +23,7 @@ export default function BoardComponent() {
     const forceUpdate = useForceUpdate();
 
     const updateSnakePosition = () => {
+        board.snake.currentDirection = board.snake.directionCommandTemp;
         const newHeadPosition = board.snake.getNewHeadPosition();
     
         if (board.isCollision(newHeadPosition) || board.snake.isSelfCollision(newHeadPosition)) {
@@ -36,8 +39,6 @@ export default function BoardComponent() {
         
         board.snake.points.unshift(newHeadPosition);
         board.rows[newHeadPosition.row][newHeadPosition.column] = true;
-
-        board.snake.currentDirection = board.snake.directionCommandTemp;
 
         forceUpdate();
         setTimeout(() => updateSnakePosition(), GAME_SPEED);
@@ -58,18 +59,33 @@ export default function BoardComponent() {
     const gameOver = () => navigation.navigate('GameOverPage' as never);
 
     const listenDeviceMotion = () => {
-        DeviceMotion.setUpdateInterval(25);
+        DeviceMotion.setUpdateInterval(5);
 
         setSubscriptionDeviceMotion(
-          DeviceMotion.addListener(deviceMotionData => handleRotationEvent(deviceMotionData.rotation))
+          DeviceMotion.addListener(deviceMotionData => {
+              if (deviceMotionData.rotation) {
+                handleRotationEvent(deviceMotionData.rotation);
+              }
+          })
         );
     };
 
     const handleRotationEvent = (rotationEvent: RotationEvent) => {
         const { beta } = rotationEvent;
-        console.log(beta);
-        const isLeft = beta > 25;
-        const isRight =  beta < -0.25;
+        const betaLimit = 0.20;
+        const isLeft = beta >= betaLimit;
+        const isRight =  beta <= -betaLimit;
+
+        if (!betaIsReseted) {
+            if (beta < betaLimit && beta > -betaLimit) {
+                betaIsReseted = true;
+            }
+            return;
+        }
+
+        if (isLeft || isRight) {
+            betaIsReseted = false;
+        }
 
         if (isLeft) {
             board.snake.newDirectionCommand(Direction.LEFT);

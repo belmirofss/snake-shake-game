@@ -4,6 +4,12 @@
     "slug": "snake-shake-game",
     "version": "1.0.0",
     "orientation": "landscape",
+    "androidStatusBar": {
+      "hidden": true
+    },
+    "androidNavigationBar": {
+      "visible": "immersive"
+    },
     "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",
