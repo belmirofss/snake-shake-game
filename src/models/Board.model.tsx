@@ -1,9 +1,8 @@
-import { Point } from "./Point.model";
+import { BOARD_SIZE } from "../constants/GameConfig.constants";
+import { BoardPoint } from "./BoardPoint.model";
 import { Snake } from "./Snake.model";
 
 export class Board {
-
-    static readonly BOARD_SIZE = 15;
 
     rows: boolean[][];
     snake: Snake;
@@ -16,19 +15,19 @@ export class Board {
         this.rows = [];
         this.snake = new Snake();
 
-        for (let i = 0; i < Board.BOARD_SIZE; i++) {
+        for (let i = 0; i < BOARD_SIZE; i++) {
             this.rows[i] = [];
     
-            for (let j = 0; j < Board.BOARD_SIZE; j++) {
+            for (let j = 0; j < BOARD_SIZE; j++) {
                 this.rows[i][j] = false;
             } 
         }
     }
 
-    isCollision(point: Point): boolean {
-        return point.x === Board.BOARD_SIZE 
-            || point.x === -1 
-            || point.y === Board.BOARD_SIZE 
-            || point.y === -1;
+    isCollision(point: BoardPoint): boolean {
+        return point.row === BOARD_SIZE 
+            || point.row === -1 
+            || point.column === BOARD_SIZE 
+            || point.column === -1;
     }  
 }

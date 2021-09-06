@@ -6,12 +6,11 @@ import { DeviceMotion } from 'expo-sensors';
 import { Subscription } from '@unimodules/react-native-adapter';
 import { Board } from '../models/Board.model';
 import { useFocusEffect, useNavigation } from '@react-navigation/core';
-import { Point } from '../models/Point.model';
+import { BoardPoint } from '../models/BoardPoint.model';
 import { useForceUpdate } from '../hooks/useForceUpdate.hook';
-import { Snake } from '../models/Snake.model';
-
-const SQUARE_SIZE = 24;
-const GAME_SPEED = 100;
+import { RotationEvent } from '../interfaces/RotationEvent.interface';
+import { Direction } from '../enums/Directions.enum';
+import { BOARD_SIZE, BOARD_SQUARE_SIZE, GAME_SPEED } from '../constants/GameConfig.constants';
 
 export default function BoardComponent() {
 
@@ -32,24 +31,24 @@ export default function BoardComponent() {
         const lastTail = board.snake.getLastTail();
 
         if (lastTail) {
-            board.rows[lastTail.y][lastTail.x] = false;
+            board.rows[lastTail.row][lastTail.column] = false;
         }
         
-        board.snake.parts.unshift(newHeadPosition);
-        board.rows[newHeadPosition.y][newHeadPosition.x] = true;
+        board.snake.points.unshift(newHeadPosition);
+        board.rows[newHeadPosition.row][newHeadPosition.column] = true;
 
-        board.snake.direction = board.snake.direction;
+        board.snake.currentDirection = board.snake.directionCommandTemp;
 
         forceUpdate();
         setTimeout(() => updateSnakePosition(), GAME_SPEED);
     }
 
-    const getBoardPieceColor = (point: Point): string => {    
+    const getBoardPieceColor = (point: BoardPoint): string => {    
         if (board.snake.isHead(point)) {
             return COLORS.PRIMARY;
         }
 
-        if (board.snake.isPart(point)) {
+        if (board.snake.isBody(point)) {
             return COLORS.SECONDARY;
         }
 
@@ -59,23 +58,25 @@ export default function BoardComponent() {
     const gameOver = () => navigation.navigate('GameOverPage' as never);
 
     const listenDeviceMotion = () => {
-        DeviceMotion.setUpdateInterval(250);
+        DeviceMotion.setUpdateInterval(25);
 
         setSubscriptionDeviceMotion(
-          DeviceMotion.addListener(deviceMotionData => {
-            const { gamma } = deviceMotionData.rotation;
-            
-
-            if (gamma > 1) {
-                console.log("RIGHT", gamma);
-            }
-
-            if (gamma < -1) {
-                console.log("LEFT", gamma)
-            }
-          })
+          DeviceMotion.addListener(deviceMotionData => handleRotationEvent(deviceMotionData.rotation))
         );
     };
+
+    const handleRotationEvent = (rotationEvent: RotationEvent) => {
+        const { beta } = rotationEvent;
+        console.log(beta);
+        const isLeft = beta > 25;
+        const isRight =  beta < -0.25;
+
+        if (isLeft) {
+            board.snake.newDirectionCommand(Direction.LEFT);
+        } else if (isRight) {
+            board.snake.newDirectionCommand(Direction.RIGHT);
+        }
+    }
 
     const removeListeningDeviceMotion = () => {
         subscriptionDeviceMotion && subscriptionDeviceMotion.remove();
@@ -105,7 +106,7 @@ export default function BoardComponent() {
                                 key={`PIEACE_${pieceIndex}`}
                                 style={{
                                     ... styles.boardPiece,
-                                    backgroundColor: getBoardPieceColor(new Point(rowIndex, pieceIndex))
+                                    backgroundColor: getBoardPieceColor(new BoardPoint(rowIndex, pieceIndex))
                                 }}>
                             </View>)
                         }
@@ -122,15 +123,15 @@ const styles = StyleSheet.create({
         backgroundColor: COLORS.BOARD_BACKGROUND,
         borderColor: '#000',
         borderWidth: 0.75,
-        width: Board.BOARD_SIZE * SQUARE_SIZE
+        width: BOARD_SIZE * BOARD_SQUARE_SIZE
     },
     row: {
-        height: SQUARE_SIZE,
+        height: BOARD_SQUARE_SIZE,
         flexDirection: 'row'
     },
     boardPiece: {
-        width: SQUARE_SIZE,
-        height: SQUARE_SIZE,
+        width: BOARD_SQUARE_SIZE,
+        height: BOARD_SQUARE_SIZE,
         borderWidth: 0.75,
         borderColor: COLORS.SQUARE_DIVIDER
     }
