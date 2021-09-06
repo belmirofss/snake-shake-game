@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { COLORS } from '../theme/Colors.constant';
 import { SHADOW } from '../theme/Shadow.constant';
 import { DeviceMotion } from 'expo-sensors';
