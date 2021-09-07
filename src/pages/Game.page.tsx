@@ -1,20 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import BoardComponent from '../components/Board.component';
 import ScoreComponent from '../components/Score.component';
 
 export default function GamePage() {
 
+    const [score, setScore] = useState(0);
+
     return (
         <View style={styles.container}>
             <View style={styles.centerContent}>
-                <ScoreComponent score={15} />
+                <ScoreComponent score={score} />
             </View>
 
-            <BoardComponent />
+            <BoardComponent onScoreChanges={score => setScore(score)} />
 
             <View style={styles.centerContent}>
-                <ScoreComponent score={15} />
             </View>
         </View>
     );

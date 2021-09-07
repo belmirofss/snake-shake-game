@@ -12,7 +12,11 @@ import { RotationEvent } from '../interfaces/RotationEvent.interface';
 import { Direction } from '../enums/Directions.enum';
 import { BOARD_SIZE, BOARD_SQUARE_SIZE, GAME_SPEED } from '../constants/GameConfig.constants';
 
-export default function BoardComponent() {
+interface BoardComponentProps {
+    onScoreChanges(score: number): void;
+}
+
+export default function BoardComponent(props: BoardComponentProps) {
 
     let betaIsReseted = true;
 
@@ -29,9 +33,11 @@ export default function BoardComponent() {
         if (board.isCollision(newHeadPosition) || board.snake.isSelfCollision(newHeadPosition)) {
             gameOver();
             return;
+        } else if (board.fruitCollision(newHeadPosition)) {
+            onFruitCollision();
         }
 
-        const lastTail = board.snake.getLastTail();
+        const lastTail = board.snake.getAndRemoveLastTail();
 
         if (lastTail) {
             board.rows[lastTail.row][lastTail.column] = false;
@@ -44,6 +50,13 @@ export default function BoardComponent() {
         setTimeout(() => updateSnakePosition(), GAME_SPEED);
     }
 
+    const onFruitCollision = () => {
+        board.score++;
+        props.onScoreChanges(board.score);
+        board.snake.eatFruit();
+        board.spawnFruit();
+    }
+
     const getBoardPieceColor = (point: BoardPoint): string => {    
         if (board.snake.isHead(point)) {
             return COLORS.PRIMARY;
@@ -51,6 +64,10 @@ export default function BoardComponent() {
 
         if (board.snake.isBody(point)) {
             return COLORS.SECONDARY;
+        }
+
+        if (board.fruit.row === point.row && board.fruit.column === point.column) {
+            return COLORS.TERTIARY;
         }
 
         return COLORS.BOARD_BACKGROUND;
@@ -73,8 +90,8 @@ export default function BoardComponent() {
     const handleRotationEvent = (rotationEvent: RotationEvent) => {
         const { beta } = rotationEvent;
         const betaLimit = 0.20;
-        const isLeft = beta >= betaLimit;
-        const isRight =  beta <= -betaLimit;
+        const isRight = beta >= betaLimit;
+        const isLeft =  beta <= -betaLimit;
 
         if (!betaIsReseted) {
             if (beta < betaLimit && beta > -betaLimit) {
@@ -104,6 +121,7 @@ export default function BoardComponent() {
         useCallback(() => {
             board.createNewGame();
             listenDeviceMotion();
+            board.spawnFruit();
             updateSnakePosition();
 
             return () => removeListeningDeviceMotion();

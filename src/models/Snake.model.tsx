@@ -46,7 +46,7 @@ export class Snake {
         return newHead;
     }
 
-    getLastTail(): BoardPoint | undefined {
+    getAndRemoveLastTail(): BoardPoint | undefined {
         return this.points.pop();
     }
 
@@ -84,5 +84,10 @@ export class Snake {
                     break;
             }
         }
+    }
+
+    eatFruit(): void {
+        const lastTail = this.points[this.points.length - 1];
+        this.points.push(new BoardPoint(lastTail.row, lastTail.column));
     }
 }
