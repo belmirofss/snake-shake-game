@@ -10,10 +10,11 @@ import { BoardPoint } from '../models/BoardPoint.model';
 import { useForceUpdate } from '../hooks/useForceUpdate.hook';
 import { RotationEvent } from '../interfaces/RotationEvent.interface';
 import { Direction } from '../enums/Directions.enum';
-import { BOARD_SIZE, BOARD_SQUARE_SIZE, GAME_SPEED } from '../constants/GameConfig.constants';
+import { BETA_LIMIT, BOARD_SIZE, BOARD_SQUARE_SIZE, GAME_SPEED } from '../constants/GameConfig.constants';
 
 interface BoardComponentProps {
     onScoreChanges(score: number): void;
+    onBetaChanges(beta: number): void;
 }
 
 export default function BoardComponent(props: BoardComponentProps) {
@@ -76,7 +77,7 @@ export default function BoardComponent(props: BoardComponentProps) {
     const gameOver = () => navigation.navigate('GameOverPage' as never);
 
     const listenDeviceMotion = () => {
-        DeviceMotion.setUpdateInterval(5);
+        DeviceMotion.setUpdateInterval(50);
 
         setSubscriptionDeviceMotion(
           DeviceMotion.addListener(deviceMotionData => {
@@ -89,12 +90,13 @@ export default function BoardComponent(props: BoardComponentProps) {
 
     const handleRotationEvent = (rotationEvent: RotationEvent) => {
         const { beta } = rotationEvent;
-        const betaLimit = 0.20;
-        const isRight = beta >= betaLimit;
-        const isLeft =  beta <= -betaLimit;
+        const isRight = beta >= BETA_LIMIT;
+        const isLeft =  beta <= -BETA_LIMIT;
+
+        props.onBetaChanges(beta);
 
         if (!betaIsReseted) {
-            if (beta < betaLimit && beta > -betaLimit) {
+            if (beta < BETA_LIMIT && beta > -BETA_LIMIT) {
                 betaIsReseted = true;
             }
             return;
