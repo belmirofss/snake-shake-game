@@ -157,9 +157,8 @@ const styles = StyleSheet.create({
     board: {
         ... SHADOW.LEVEL_1,
         backgroundColor: COLORS.BOARD_BACKGROUND,
-        borderColor: '#000',
         borderWidth: 0.75,
-        width: BOARD_SIZE * BOARD_SQUARE_SIZE
+        borderColor: COLORS.SQUARE_DIVIDER
     },
     row: {
         height: BOARD_SQUARE_SIZE,
