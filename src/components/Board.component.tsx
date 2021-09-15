@@ -11,6 +11,8 @@ import { useForceUpdate } from '../hooks/useForceUpdate.hook';
 import { RotationEvent } from '../interfaces/RotationEvent.interface';
 import { Direction } from '../enums/Directions.enum';
 import { BETA_LIMIT, BOARD_SIZE, BOARD_SQUARE_SIZE, GAME_SPEED } from '../constants/GameConfig.constants';
+import { Audio } from 'expo-av';
+import { setIsEnabledAsync, Sound } from 'expo-av/build/Audio';
 
 interface BoardComponentProps {
     onScoreChanges(score: number): void;
@@ -52,6 +54,7 @@ export default function BoardComponent(props: BoardComponentProps) {
     }
 
     const onFruitCollision = () => {
+        playEatFruitSound();
         board.score++;
         props.onScoreChanges(board.score);
         board.snake.eatFruit();
@@ -74,9 +77,27 @@ export default function BoardComponent(props: BoardComponentProps) {
         return COLORS.BOARD_BACKGROUND;
     }
 
-    const gameOver = () => navigation.navigate('GameOverPage', {
-        score: board.score
-    });
+    const gameOver = () => {
+        playGameOverSound();
+        navigation.navigate('GameOverPage', {
+            score: board.score
+        });
+    }
+
+    const playEatFruitSound = async () => {
+        const { sound } = await Audio.Sound.createAsync(require('../sounds/eat_fruit.wav'));
+        sound.playAsync();
+    } 
+
+    const playGameOverSound = async () => {
+        const { sound } = await Audio.Sound.createAsync(require('../sounds/game_over.wav'));
+        sound.playAsync();
+    }
+
+    const playStartGameSound = async () => {
+        const { sound } = await Audio.Sound.createAsync(require('../sounds/start_game.wav'));
+        sound.playAsync();
+    }
 
     const listenDeviceMotion = () => {
         DeviceMotion.setUpdateInterval(50);
@@ -120,15 +141,19 @@ export default function BoardComponent(props: BoardComponentProps) {
         DeviceMotion.removeAllListeners();
         setSubscriptionDeviceMotion(null);
     };
+    
+    const startNewGame = () => {
+        playStartGameSound();
+        board.createNewGame();
+        props.onScoreChanges(board.score);
+        listenDeviceMotion();
+        board.spawnFruit();
+        updateSnakePosition();
+    }
 
     useFocusEffect(
         useCallback(() => {
-            board.createNewGame();
-            props.onScoreChanges(board.score);
-            listenDeviceMotion();
-            board.spawnFruit();
-            updateSnakePosition();
-
+            startNewGame();
             return () => removeListeningDeviceMotion();
         }, [])
     );
