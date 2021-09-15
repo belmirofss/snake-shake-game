@@ -3,7 +3,7 @@
 # SnakeShake Game
 Play the classic snake game in a different way. Use your smartphone sensors to move the snake. Shake your smartphone!
 
-[Download now](https://play.google.com/store/apps/details?id=com.yabcompany.snake-shake-game)
+[Download now](https://play.google.com/store/apps/details?id=com.yabcompany.snakeshakegame)
 
 ## Project
 
