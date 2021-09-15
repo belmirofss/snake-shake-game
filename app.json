@@ -27,10 +27,13 @@
       "requireFullScreen": true
     },
     "android": {
+      "package": "com.yabcompany.snake-shake-game",
+      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffde59"
-      }
+      },
+      "permissions": []
     },
     "web": {
       "favicon": "./assets/favicon.png"
