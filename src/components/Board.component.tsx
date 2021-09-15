@@ -74,7 +74,9 @@ export default function BoardComponent(props: BoardComponentProps) {
         return COLORS.BOARD_BACKGROUND;
     }
 
-    const gameOver = () => navigation.navigate('GameOverPage' as never);
+    const gameOver = () => navigation.navigate('GameOverPage', {
+        score: board.score
+    });
 
     const listenDeviceMotion = () => {
         DeviceMotion.setUpdateInterval(50);
@@ -122,6 +124,7 @@ export default function BoardComponent(props: BoardComponentProps) {
     useFocusEffect(
         useCallback(() => {
             board.createNewGame();
+            props.onScoreChanges(board.score);
             listenDeviceMotion();
             board.spawnFruit();
             updateSnakePosition();

@@ -10,7 +10,7 @@ export default function HomePage() {
 
   const navigation = useNavigation();
 
-  const startGameclick = () => navigation.navigate('GamePage' as never);
+  const startGameclick = () => navigation.navigate('GamePage');
 
   return (
     <View style={styles.container}>
