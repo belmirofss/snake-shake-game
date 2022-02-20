@@ -1,6 +1,6 @@
 ![SnakeShake Game Logo](https://i.imgur.com/J5CcVLm.png)
 
-# SnakeShake Game
+# SnakeShake Game, powered by Expo
 Play the classic snake game in a different way. Use your smartphone sensors to move the snake. Shake your smartphone!
 
 [Download now](https://play.google.com/store/apps/details?id=com.yabcompany.snakeshakegame)
