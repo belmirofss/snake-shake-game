@@ -1,11 +1,11 @@
 import { useNavigation } from "@react-navigation/core";
 import React from "react";
 import { StyleSheet, View } from "react-native";
-import ButtonComponent from "../components/Button.component";
-import TextMessageComponent from "../components/TextMessage.component";
+import { Button } from "../components/Button";
+import { TextMessage } from "../components/TextMessage";
 import LOGO from "../images/logo.png";
 
-export default function HomePage() {
+export const Home = () => {
   const navigation = useNavigation();
 
   const startGameclick = () => navigation.navigate("GamePage");
@@ -18,18 +18,18 @@ export default function HomePage() {
           width={228} 
         /> */}
 
-        <TextMessageComponent>
+        <TextMessage>
           Play the classic snake game in a different way. Use your smartphone
           sensors to move the snake. Shake your smartphone!
-        </TextMessageComponent>
+        </TextMessage>
       </View>
 
       <View style={styles.wrapperButton}>
-        <ButtonComponent text="START" onPress={startGameclick} />
+        <Button text="START" onPress={startGameclick} />
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {

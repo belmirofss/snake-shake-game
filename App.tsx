@@ -1,21 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
-import Routes from './src/routes/Routes.route';
-import AppLoading from 'expo-app-loading';
-import { useFonts } from 'expo-font';
-import * as ScreenOrientation from 'expo-screen-orientation';
+import { useEffect, useState } from "react";
+import { StyleSheet, View } from "react-native";
+import Routes from "./src/Routes";
+import AppLoading from "expo-app-loading";
+import { useFonts } from "expo-font";
+import * as ScreenOrientation from "expo-screen-orientation";
 
 export default function App() {
-
   const [fontsLoaded] = useFonts({
-    'FS_Gravity': require('./src/fonts/fs-gravity.otf'),
+    FS_Gravity: require("./src/fonts/fs-gravity.otf"),
   });
-  const [landscapeOrientationSetted, setLandscapeOrientationSetted] = useState(false);
+  const [landscapeOrientationSetted, setLandscapeOrientationSetted] =
+    useState(false);
 
   const setLandscapeOrientation = async () => {
-    await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE_RIGHT);
+    await ScreenOrientation.lockAsync(
+      ScreenOrientation.OrientationLock.LANDSCAPE_RIGHT
+    );
     setLandscapeOrientationSetted(true);
-  }
+  };
 
   useEffect(() => {
     setLandscapeOrientation();
@@ -35,6 +37,6 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff'
+    backgroundColor: "#fff",
   },
 });
