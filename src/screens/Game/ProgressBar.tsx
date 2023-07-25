@@ -4,10 +4,10 @@ type Props = {
   progress: number;
 };
 
-export const ProgressBar = (props: Props) => {
+export const ProgressBar = ({ progress }: Props) => {
   return (
     <Progress.Bar
-      progress={props.progress}
+      progress={progress}
       height={18}
       borderColor="#000"
       color="#000"

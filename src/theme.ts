@@ -3,12 +3,15 @@ export const THEME = {
         PRIMARY: '#ff914d',
         SECONDARY: '#ffde59',
         TERTIARY: '#ff1616',
-    
-        BOARD_BACKGROUND: '#fff',
-        SQUARE_DIVIDER: '#000'
+        BLACK: '#000',
+        WHITE: '#fff'
     },
-    FONTS: {
-        REGULAR: 'FS_Gravity'
+    FONT: 'FS_Gravity',
+    FONT_SIZES: {
+        M: 28,
+        L: 36,
+        XL: 56,
+        XXL: 90
     },
     SHADOWS: {
         LEVEL_1: {

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import { Text, TouchableOpacity } from "react-native";
 import { THEME } from "../theme";
 
 type Props = {
@@ -6,25 +6,27 @@ type Props = {
   onPress(): void;
 };
 
-export const Button = (props: Props) => {
+export const Button = ({ text, onPress }: Props) => {
   return (
-    <TouchableOpacity style={styles.button} onPress={props.onPress}>
-      <Text style={styles.buttonText}>{props.text}</Text>
+    <TouchableOpacity
+      style={{
+        backgroundColor: THEME.COLORS.PRIMARY,
+        width: "100%",
+        paddingVertical: 12,
+        ...THEME.SHADOWS.LEVEL_1,
+      }}
+      onPress={onPress}
+    >
+      <Text
+        style={{
+          color: THEME.COLORS.WHITE,
+          fontSize: THEME.FONT_SIZES.M,
+          textAlign: "center",
+          fontFamily: THEME.FONT,
+        }}
+      >
+        {text}
+      </Text>
     </TouchableOpacity>
   );
 };
-
-const styles = StyleSheet.create({
-  button: {
-    backgroundColor: THEME.COLORS.PRIMARY,
-    width: "100%",
-    paddingVertical: 12,
-    ...THEME.SHADOWS.LEVEL_1,
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 28,
-    textAlign: "center",
-    fontFamily: THEME.FONTS.REGULAR,
-  },
-});

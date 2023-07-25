@@ -10,3 +10,8 @@ export enum Direction {
   RIGHT,
   DOWN,
 }
+
+export type Point = {
+  row: number;
+  column: number;
+};

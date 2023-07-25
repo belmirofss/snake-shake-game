@@ -1,47 +1,50 @@
 import { useNavigation } from "@react-navigation/core";
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { View, Text, Image } from "react-native";
 import { Button } from "../components/Button";
-import { TextMessage } from "../components/TextMessage";
+import { THEME } from "../theme";
 import LOGO from "../images/logo.png";
 
 export const Home = () => {
   const navigation = useNavigation();
 
-  const startGameclick = () => navigation.navigate("GamePage");
+  const startGameclick = () => navigation.navigate("Game");
 
   return (
-    <View style={styles.container}>
-      <View style={styles.wrapperUpperContent}>
-        {/* <AutoHeightImage
-          source={LOGO}
-          width={228} 
-        /> */}
+    <View
+      style={{
+        flex: 1,
+        flexDirection: "column",
+        justifyContent: "space-between",
+        alignItems: "center",
+      }}
+    >
+      <Image
+        source={LOGO}
+        style={{
+          aspectRatio: 16 / 9,
+          height: 150,
+        }}
+      />
 
-        <TextMessage>
-          Play the classic snake game in a different way. Use your smartphone
-          sensors to move the snake. Shake your smartphone!
-        </TextMessage>
-      </View>
+      <Text
+        style={{
+          fontSize: THEME.FONT_SIZES.M,
+          textAlign: "center",
+          fontFamily: THEME.FONT,
+        }}
+      >
+        Play the classic snake game in a different way. Use your smartphone
+        sensors to move the snake. Shake your smartphone!
+      </Text>
 
-      <View style={styles.wrapperButton}>
+      <View
+        style={{
+          width: "100%",
+        }}
+      >
         <Button text="START" onPress={startGameclick} />
       </View>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: "column",
-    justifyContent: "space-between",
-  },
-  wrapperUpperContent: {
-    flexDirection: "column",
-    alignItems: "center",
-  },
-  wrapperButton: {
-    width: "100%",
-  },
-});

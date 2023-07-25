@@ -1,29 +1,30 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import HomePage from "./screens/Home";
-import GamePage from "./screens/Game";
-import GameOverPage from "./screens/GameOver";
+import { Home } from "./screens/Home";
+import { Game } from "./screens/Game/Game";
+import { GameOver } from "./screens/GameOver";
+import { THEME } from "./theme";
+
+const StackNavigator = createStackNavigator();
 
 export default function Routes() {
-  const StackNavigator = createStackNavigator();
-
   return (
     <NavigationContainer>
       <StackNavigator.Navigator
         screenOptions={{
           cardStyle: {
-            backgroundColor: "#fff",
+            backgroundColor: THEME.COLORS.WHITE,
             padding: 24,
           },
           headerShown: false,
         }}
         initialRouteName="HomePage"
       >
-        <StackNavigator.Screen name="HomePage" component={HomePage} />
+        <StackNavigator.Screen name="Home" component={Home} />
 
-        <StackNavigator.Screen name="GamePage" component={GamePage} />
+        <StackNavigator.Screen name="Game" component={Game} />
 
-        <StackNavigator.Screen name="GameOverPage" component={GameOverPage} />
+        <StackNavigator.Screen name="GameOver" component={GameOver} />
       </StackNavigator.Navigator>
     </NavigationContainer>
   );

@@ -4,6 +4,7 @@ import Routes from "./src/Routes";
 import AppLoading from "expo-app-loading";
 import { useFonts } from "expo-font";
 import * as ScreenOrientation from "expo-screen-orientation";
+import { THEME } from "./src/theme";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -37,6 +38,6 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: THEME.COLORS.WHITE,
   },
 });

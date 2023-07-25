@@ -1,5 +1,5 @@
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/core";
-import { StyleSheet, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import { Button } from "../components/Button";
 import { Score } from "../components/Score";
 import { THEME } from "../theme";
@@ -19,33 +19,35 @@ export const GameOver = () => {
   const tryAgainClick = () => navigation.navigate("Game");
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.gameOverText}>GAME OVER</Text>
+    <View
+      style={{
+        flex: 1,
+        flexDirection: "column",
+        justifyContent: "space-between",
+      }}
+    >
+      <Text
+        style={{
+          fontSize: THEME.FONT_SIZES.XXL,
+          fontFamily: THEME.FONT,
+          color: THEME.COLORS.TERTIARY,
+          textAlign: "center",
+          lineHeight: 75,
+          marginTop: 28,
+        }}
+      >
+        GAME OVER
+      </Text>
       <View>
         <Score score={score} />
       </View>
-      <View style={styles.wrapperButton}>
+      <View
+        style={{
+          width: "100%",
+        }}
+      >
         <Button text="TRY AGAIN" onPress={tryAgainClick} />
       </View>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: "column",
-    justifyContent: "space-between",
-  },
-  gameOverText: {
-    fontSize: 90,
-    fontFamily: THEME.FONTS.REGULAR,
-    color: THEME.COLORS.TERTIARY,
-    textAlign: "center",
-    lineHeight: 75,
-    marginTop: 28,
-  },
-  wrapperButton: {
-    width: "100%",
-  },
-});

@@ -1,30 +1,33 @@
-import { StyleSheet, Text } from "react-native";
+import { Text } from "react-native";
 import { THEME } from "../theme";
 
 type Props = {
   score: number;
 };
 
-export const Score = (props: Props) => {
+export const Score = ({ score }: Props) => {
   return (
     <>
-      <Text style={styles.scoreText}>FRUITS</Text>
-      <Text style={styles.scorePoints}>{props.score}</Text>
+      <Text
+        style={{
+          textAlign: "center",
+          fontFamily: THEME.FONT,
+          color: THEME.COLORS.BLACK,
+          fontSize: THEME.FONT_SIZES.L,
+        }}
+      >
+        FRUITS
+      </Text>
+      <Text
+        style={{
+          textAlign: "center",
+          fontFamily: THEME.FONT,
+          color: THEME.COLORS.BLACK,
+          fontSize: THEME.FONT_SIZES.XL,
+        }}
+      >
+        {score}
+      </Text>
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  scoreText: {
-    textAlign: "center",
-    fontFamily: THEME.FONTS.REGULAR,
-    color: "#000",
-    fontSize: 36,
-  },
-  scorePoints: {
-    textAlign: "center",
-    fontFamily: THEME.FONTS.REGULAR,
-    color: "#000",
-    fontSize: 52,
-  },
-});
