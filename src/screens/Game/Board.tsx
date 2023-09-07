@@ -13,7 +13,6 @@ import {
 import { Direction, Point, RotationEvent } from "../../types";
 import { Subscription } from "expo-screen-orientation";
 import { useSnakeGame } from "../../hooks/useSnakeGame";
-import { useBoard } from "../../hooks/useBoard";
 
 type Props = {
   onScoreChanges(score: number): void;
@@ -24,45 +23,30 @@ export const Board = ({ onScoreChanges, onBetaChanges }: Props) => {
   const [betaIsReseted, setBetaIsReseted] = useState(true);
   const {
     score,
-    eat,
-    keepGoing,
-    isSelfCollision,
-    upScore,
     isHead,
     isBody,
     updateSnakeDirection,
-  } = useSnakeGame();
-  const { rows, isFruit, isBoundaryCollision, isFruitCollision, spawnFruit } =
-    useBoard();
+    moveSnake,
+    rows,
+    isFruit,
+    spawnFruit,
+  } = useSnakeGame({
+    onGameOver: () => {
+      playGameOverSound();
+      navigation.navigate("GameOver", {
+        score: score,
+      });
+    },
+    onScore: (score) => {
+      playEatFruitSound();
+      onScoreChanges(score);
+    },
+  });
 
   const [subscriptionDeviceMotion, setSubscriptionDeviceMotion] =
     useState<Subscription | null>(null);
 
   const navigation = useNavigation();
-
-  const updateSnakePosition = () => {
-    const headPosition = keepGoing();
-
-    console.log(
-      headPosition,
-      isBoundaryCollision(headPosition),
-      isSelfCollision(headPosition),
-      isFruitCollision(headPosition)
-    );
-
-    if (isBoundaryCollision(headPosition) || isSelfCollision(headPosition)) {
-      gameOver();
-      return;
-    }
-
-    if (isFruitCollision(headPosition)) {
-      playEatFruitSound();
-      eat();
-      upScore();
-      onScoreChanges(score);
-      spawnFruit();
-    }
-  };
 
   const getBoardPieceColor = (point: Point) => {
     if (isHead(point)) {
@@ -78,13 +62,6 @@ export const Board = ({ onScoreChanges, onBetaChanges }: Props) => {
     }
 
     return THEME.COLORS.WHITE;
-  };
-
-  const gameOver = () => {
-    playGameOverSound();
-    navigation.navigate("GameOver", {
-      score: score,
-    });
   };
 
   const playEatFruitSound = async () => {
@@ -148,7 +125,7 @@ export const Board = ({ onScoreChanges, onBetaChanges }: Props) => {
     listenDeviceMotion();
     spawnFruit();
 
-    const interval = setInterval(() => updateSnakePosition(), GAME_SPEED);
+    const interval = setInterval(() => moveSnake(), GAME_SPEED);
 
     return () => {
       subscriptionDeviceMotion && subscriptionDeviceMotion.remove();

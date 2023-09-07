@@ -2,7 +2,7 @@
   "expo": {
     "name": "SnakeShake Game",
     "slug": "snake-shake-game",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "orientation": "landscape",
     "androidStatusBar": {
       "hidden": true
@@ -28,15 +28,40 @@
     },
     "android": {
       "package": "com.yabcompany.snakeshakegame",
-      "versionCode": 1,
+      "versionCode": 2,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffde59"
       },
-      "permissions": []
+      "permissions": [
+        "com.google.android.gms.permission.AD_ID"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "compileSdkVersion": 33,
+            "targetSdkVersion": 33,
+            "buildToolsVersion": "33.0.0"
+          },
+          "ios": {
+            "deploymentTarget": "13.0"
+          }
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "bcf8648f-a633-4363-b4a3-b865f70ac62e"
+      }
     }
+  },
+  "react-native-google-mobile-ads": {
+    "android_app_id": "ca-app-pub-6575307967199593~2223779679"
   }
 }
