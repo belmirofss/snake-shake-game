@@ -99,6 +99,10 @@ export const useSnakeGame = ({ onGameOver, onScore }: Props) => {
     const row = randomNumber();
     const column = randomNumber();
 
+    if (isHead({row, column}) || isBody({row, column})) {
+      spawnFruit()
+    }
+
     setFruit({ row, column });
   };
 

@@ -1,22 +1,29 @@
 import { useNavigation } from "@react-navigation/core";
-import React from "react";
+import React, { useEffect } from "react";
 import { View, Text, Image } from "react-native";
 import { Button } from "../components/Button";
 import { THEME } from "../theme";
 import LOGO from "../images/logo.png";
+import { useAd } from "../hooks/useAd";
 
 export const Home = () => {
   const navigation = useNavigation();
+  const { loadAd } = useAd();
 
   const startGameclick = () => navigation.navigate("Game");
+
+  useEffect(() => {
+    loadAd();
+  }, []);
 
   return (
     <View
       style={{
         flex: 1,
         flexDirection: "column",
-        justifyContent: "space-between",
+        justifyContent: "center",
         alignItems: "center",
+        gap: 8,
       }}
     >
       <Image
@@ -27,24 +34,29 @@ export const Home = () => {
         }}
       />
 
-      <Text
-        style={{
-          fontSize: THEME.FONT_SIZES.M,
-          textAlign: "center",
-          fontFamily: THEME.FONT,
-        }}
-      >
-        Play the classic snake game in a different way. Use your smartphone
-        sensors to move the snake. Shake your smartphone!
-      </Text>
-
-      <View
-        style={{
-          width: "100%",
-        }}
-      >
-        <Button text="START" onPress={startGameclick} />
+      <View>
+        <Text
+          style={{
+            fontSize: THEME.FONT_SIZES.M,
+            textAlign: "center",
+            fontFamily: THEME.FONT,
+          }}
+        >
+          Play the classic snake game now!
+        </Text>
+        <Text
+          style={{
+            fontSize: THEME.FONT_SIZES.S,
+            textAlign: "center",
+            fontFamily: THEME.FONT,
+          }}
+        >
+          After the game starts, click on the sides of the screen to change the
+          direction.
+        </Text>
       </View>
+
+      <Button text="START" onPress={startGameclick} />
     </View>
   );
 };

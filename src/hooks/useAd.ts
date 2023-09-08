@@ -1,18 +1,13 @@
-import { useEffect } from "react";
 import { ToastAndroid } from "react-native";
 import { useInterstitialAd, TestIds } from "react-native-google-mobile-ads";
 import { AD_UNIT_ID } from "../constants";
 
 const adUnitId = __DEV__ ? TestIds.INTERSTITIAL : AD_UNIT_ID;
 
-export const Ad = () => {
+export const useAd = () => {
   const { isLoaded, load, show } = useInterstitialAd(adUnitId, {
     requestNonPersonalizedAdsOnly: true,
   });
-
-  useEffect(() => {
-    load();
-  }, [load]);
 
   return {
     showAd: () => {
@@ -24,5 +19,6 @@ export const Ad = () => {
       show();
     },
     isLoaded,
+    loadAd: load,
   };
 };

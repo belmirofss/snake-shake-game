@@ -3,7 +3,7 @@
     "name": "SnakeShake Game",
     "slug": "snake-shake-game",
     "version": "2.0.0",
-    "orientation": "landscape",
+    "orientation": "portrait",
     "androidStatusBar": {
       "hidden": true
     },

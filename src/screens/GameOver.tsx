@@ -1,4 +1,9 @@
-import { RouteProp, useNavigation, useRoute } from "@react-navigation/core";
+import {
+  RouteProp,
+  useNavigation,
+  useRoute,
+  CommonActions,
+} from "@react-navigation/core";
 import { Text, View } from "react-native";
 import { Button } from "../components/Button";
 import { Score } from "../components/Score";
@@ -16,14 +21,22 @@ export const GameOver = () => {
   const route = useRoute<RouteProp<ParamList, "Score">>();
   const { score } = route.params;
 
-  const tryAgainClick = () => navigation.navigate("Game");
+  const tryAgainClick = () => {
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 1,
+        routes: [{ name: "Game" }],
+      })
+    );
+  };
 
   return (
     <View
       style={{
         flex: 1,
         flexDirection: "column",
-        justifyContent: "space-between",
+        justifyContent: "center",
+        gap: 8,
       }}
     >
       <Text
@@ -38,16 +51,8 @@ export const GameOver = () => {
       >
         GAME OVER
       </Text>
-      <View>
-        <Score score={score} />
-      </View>
-      <View
-        style={{
-          width: "100%",
-        }}
-      >
-        <Button text="TRY AGAIN" onPress={tryAgainClick} />
-      </View>
+      <Score score={score} />
+      <Button text="TRY AGAIN" onPress={tryAgainClick} />
     </View>
   );
 };

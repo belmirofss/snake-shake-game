@@ -10,21 +10,21 @@ export default function App() {
   const [fontsLoaded] = useFonts({
     FS_Gravity: require("./src/fonts/fs-gravity.otf"),
   });
-  const [landscapeOrientationSetted, setLandscapeOrientationSetted] =
+  const [portraitOrientationSetted, setPortraitOrientationSetted] =
     useState(false);
 
-  const setLandscapeOrientation = async () => {
+  const setPortraitOrientation = async () => {
     await ScreenOrientation.lockAsync(
-      ScreenOrientation.OrientationLock.LANDSCAPE_RIGHT
+      ScreenOrientation.OrientationLock.PORTRAIT
     );
-    setLandscapeOrientationSetted(true);
+    setPortraitOrientationSetted(true);
   };
 
   useEffect(() => {
-    setLandscapeOrientation();
+    setPortraitOrientation();
   }, []);
 
-  if (!fontsLoaded || !landscapeOrientationSetted) {
+  if (!fontsLoaded || !portraitOrientationSetted) {
     return <AppLoading />;
   }
 

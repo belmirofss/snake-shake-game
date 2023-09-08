@@ -8,6 +8,7 @@ export const THEME = {
     },
     FONT: 'FS_Gravity',
     FONT_SIZES: {
+        S: 18,
         M: 28,
         L: 36,
         XL: 56,

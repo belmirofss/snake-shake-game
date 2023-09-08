@@ -1,26 +1,22 @@
-import { useCallback, useState, useEffect } from "react";
+import { useEffect } from "react";
 import { View } from "react-native";
-import { DeviceMotion } from "expo-sensors";
-import { useFocusEffect, useNavigation } from "@react-navigation/core";
+import {
+  useNavigation,
+  useIsFocused,
+  CommonActions,
+} from "@react-navigation/core";
 import { Audio } from "expo-av";
 import { THEME } from "../../theme";
-import {
-  BETA_LIMIT,
-  BOARD_SIZE,
-  BOARD_SQUARE_SIZE,
-  GAME_SPEED,
-} from "../../constants";
-import { Direction, Point, RotationEvent } from "../../types";
-import { Subscription } from "expo-screen-orientation";
+import { BOARD_SIZE, BOARD_SQUARE_SIZE, GAME_SPEED } from "../../constants";
+import { Point } from "../../types";
 import { useSnakeGame } from "../../hooks/useSnakeGame";
 
 type Props = {
   onScoreChanges(score: number): void;
-  onBetaChanges(beta: number): void;
 };
 
-export const Board = ({ onScoreChanges, onBetaChanges }: Props) => {
-  const [betaIsReseted, setBetaIsReseted] = useState(true);
+export const Board = ({ onScoreChanges }: Props) => {
+  const isFocused = useIsFocused();
   const {
     score,
     isHead,
@@ -33,18 +29,25 @@ export const Board = ({ onScoreChanges, onBetaChanges }: Props) => {
   } = useSnakeGame({
     onGameOver: () => {
       playGameOverSound();
-      navigation.navigate("GameOver", {
-        score: score,
-      });
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 1,
+          routes: [
+            {
+              name: "GameOver",
+              params: {
+                score,
+              },
+            },
+          ],
+        })
+      );
     },
     onScore: (score) => {
       playEatFruitSound();
       onScoreChanges(score);
     },
   });
-
-  const [subscriptionDeviceMotion, setSubscriptionDeviceMotion] =
-    useState<Subscription | null>(null);
 
   const navigation = useNavigation();
 
@@ -85,55 +88,18 @@ export const Board = ({ onScoreChanges, onBetaChanges }: Props) => {
     sound.playAsync();
   };
 
-  const listenDeviceMotion = () => {
-    DeviceMotion.setUpdateInterval(50);
-
-    setSubscriptionDeviceMotion(
-      DeviceMotion.addListener((deviceMotionData) => {
-        if (deviceMotionData.rotation) {
-          handleRotationEvent(deviceMotionData.rotation);
-        }
-      })
-    );
-  };
-
-  const handleRotationEvent = (rotationEvent: RotationEvent) => {
-    const { beta } = rotationEvent;
-    const isRight = beta >= BETA_LIMIT;
-    const isLeft = beta <= -BETA_LIMIT;
-
-    onBetaChanges(beta);
-
-    if (!betaIsReseted && beta < BETA_LIMIT && beta > -BETA_LIMIT) {
-      setBetaIsReseted(true);
-      return;
-    }
-
-    if (isLeft || isRight) {
-      setBetaIsReseted(false);
-    }
-
-    if (isLeft) {
-      updateSnakeDirection(Direction.LEFT);
-    } else if (isRight) {
-      updateSnakeDirection(Direction.RIGHT);
-    }
-  };
-
   useEffect(() => {
-    playStartGameSound();
-    listenDeviceMotion();
-    spawnFruit();
+    if (isFocused) {
+      playStartGameSound();
+      spawnFruit();
+    }
 
     const interval = setInterval(() => moveSnake(), GAME_SPEED);
 
     return () => {
-      subscriptionDeviceMotion && subscriptionDeviceMotion.remove();
-      DeviceMotion.removeAllListeners();
-      setSubscriptionDeviceMotion(null);
       clearInterval(interval);
     };
-  }, []);
+  }, [isFocused]);
 
   return (
     <View
