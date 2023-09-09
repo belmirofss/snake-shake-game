@@ -4,55 +4,25 @@ import {
   Gesture,
   GestureDetector,
 } from "react-native-gesture-handler";
-import { Audio } from "expo-av";
 import { BOARD_SIZE, BOARD_SQUARE_SIZE } from "../constants";
 import { THEME } from "../theme";
 import { Direction, Point } from "../types";
 import { useSnakeGame } from "../hooks/useSnakeGame";
-import {
-  CommonActions,
-  useIsFocused,
-  useNavigation,
-} from "@react-navigation/native";
+import { useIsFocused } from "@react-navigation/native";
 import { useEffect } from "react";
 import { Score } from "../components/Score";
-import { useAd } from "../hooks/useAd";
 
 export const Game = () => {
-  const navigation = useNavigation();
   const isFocused = useIsFocused();
-  const { showAd } = useAd();
   const {
-    score,
     rows,
+    score,
     isHead,
     isBody,
     updateSnakeDirection,
     isFruit,
-    spawnFruit,
     startSnake,
-  } = useSnakeGame({
-    onGameOver: () => {
-      playGameOverSound();
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 1,
-          routes: [
-            {
-              name: "GameOver",
-              params: {
-                score,
-              },
-            },
-          ],
-        })
-      );
-      showAd();
-    },
-    onScore: () => {
-      playEatFruitSound();
-    },
-  });
+  } = useSnakeGame();
 
   const getBoardPieceColor = (point: Point) => {
     if (isHead(point)) {
@@ -80,31 +50,8 @@ export const Game = () => {
       }
     });
 
-  const playEatFruitSound = async () => {
-    const { sound } = await Audio.Sound.createAsync(
-      require("../sounds/eat_fruit.wav")
-    );
-    sound.playAsync();
-  };
-
-  const playGameOverSound = async () => {
-    const { sound } = await Audio.Sound.createAsync(
-      require("../sounds/game_over.wav")
-    );
-    sound.playAsync();
-  };
-
-  const playStartGameSound = async () => {
-    const { sound } = await Audio.Sound.createAsync(
-      require("../sounds/start_game.wav")
-    );
-    sound.playAsync();
-  };
-
   useEffect(() => {
     if (isFocused) {
-      playStartGameSound();
-      spawnFruit();
       startSnake();
     }
   }, [isFocused]);

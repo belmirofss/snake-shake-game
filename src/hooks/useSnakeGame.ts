@@ -1,23 +1,44 @@
 import { useRef, useState } from "react";
+import { Audio } from "expo-av";
 import { Point, Direction } from "../types";
 import { BOARD_SIZE, GAME_SPEED } from "../constants";
+import { CommonActions, useNavigation } from "@react-navigation/native";
+import { useAd } from "./useAd";
 
 const randomNumber = () => Math.floor(Math.random() * BOARD_SIZE);
 
-const useForceUpdate = () =>{
+const useForceUpdate = () => {
   const [_, setValue] = useState(0);
-  return () => setValue(value => value + 1);
-}
-
-type Props = {
-  onGameOver: () => void;
-  onScore: () => void;
+  return () => setValue((value) => value + 1);
 };
 
-export const useSnakeGame = ({ onGameOver, onScore }: Props) => {
+const playEatFruitSound = async () => {
+  const { sound } = await Audio.Sound.createAsync(
+    require("../sounds/eat_fruit.wav")
+  );
+  sound.playAsync();
+};
+
+const playGameOverSound = async () => {
+  const { sound } = await Audio.Sound.createAsync(
+    require("../sounds/game_over.wav")
+  );
+  sound.playAsync();
+};
+
+const playStartGameSound = async () => {
+  const { sound } = await Audio.Sound.createAsync(
+    require("../sounds/start_game.wav")
+  );
+  sound.playAsync();
+};
+
+export const useSnakeGame = () => {
   const rows = Array.from({ length: BOARD_SIZE }, () =>
     Array(BOARD_SIZE).fill(1)
   );
+  const { showAd} = useAd()
+  const navigation = useNavigation();
   const forceUpdate = useForceUpdate();
   const snakePoints = useRef<Point[]>([
     {
@@ -35,7 +56,8 @@ export const useSnakeGame = ({ onGameOver, onScore }: Props) => {
   });
 
   const isHead = (point: Point) =>
-    snakePoints.current[0].row === point.row && snakePoints.current[0].column === point.column;
+    snakePoints.current[0].row === point.row &&
+    snakePoints.current[0].column === point.column;
 
   const isBody = (point: Point) =>
     !!snakePoints.current.find(
@@ -67,7 +89,7 @@ export const useSnakeGame = ({ onGameOver, onScore }: Props) => {
       spawnFruit();
     }
 
-    fruit.current = { row, column }
+    fruit.current = { row, column };
   };
 
   const eat = () => {
@@ -75,7 +97,7 @@ export const useSnakeGame = ({ onGameOver, onScore }: Props) => {
     snakePoints.current = [
       ...snakePoints.current,
       { column: lastTail.column, row: lastTail.row },
-    ]
+    ];
   };
 
   const updateSnakeDirection = (newDirection: Direction) => {
@@ -110,7 +132,7 @@ export const useSnakeGame = ({ onGameOver, onScore }: Props) => {
     let previousPoint: Point | undefined;
 
     const newSnakePoints = snakePoints.current.map((point, index) => {
-      const originalPoint = {... point }
+      const originalPoint = { ...point };
 
       if (index === 0) {
         if (snakeDirection.current === Direction.LEFT) {
@@ -122,19 +144,18 @@ export const useSnakeGame = ({ onGameOver, onScore }: Props) => {
         } else if (snakeDirection.current === Direction.DOWN) {
           point.row++;
         }
-        
       } else {
         if (previousPoint) {
-          point.column = previousPoint.column
-          point.row = previousPoint.row
+          point.column = previousPoint.column;
+          point.row = previousPoint.row;
         }
       }
-      
-      previousPoint = originalPoint
-    
+
+      previousPoint = originalPoint;
+
       return point;
     });
-    snakePoints.current = newSnakePoints
+    snakePoints.current = newSnakePoints;
 
     const newHeadPointPosition = newSnakePoints[0];
 
@@ -142,31 +163,48 @@ export const useSnakeGame = ({ onGameOver, onScore }: Props) => {
       isBoundaryCollision(newHeadPointPosition) ||
       isSelfCollision(newHeadPointPosition)
     ) {
-      onGameOver();
+      playGameOverSound();
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 1,
+          routes: [
+            {
+              name: "GameOver",
+              params: {
+                score: score.current,
+              },
+            },
+          ],
+        })
+      );
+      showAd()
       return;
     }
 
     if (isFruitCollision(newHeadPointPosition)) {
       eat();
       upScore();
+      playEatFruitSound();
       spawnFruit();
-      onScore();
     }
 
     forceUpdate();
     setTimeout(() => moveSnake(), GAME_SPEED);
   };
 
-  const upScore = () => score.current = score.current + 1;
+  const upScore = () => (score.current = score.current + 1);
 
   return {
-    score: score.current,
     rows,
+    score: score.current,
     updateSnakeDirection,
-    startSnake: () => moveSnake(),
+    startSnake: () => {
+      playStartGameSound();
+      spawnFruit();
+      moveSnake();
+    },
     isHead,
     isBody,
     isFruit,
-    spawnFruit,
   };
 };

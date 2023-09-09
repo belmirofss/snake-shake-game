@@ -17,7 +17,6 @@ type ParamList = {
 
 export const GameOver = () => {
   const navigation = useNavigation();
-
   const route = useRoute<RouteProp<ParamList, "Score">>();
   const { score } = route.params;
 
