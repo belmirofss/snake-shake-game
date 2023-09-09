@@ -46,13 +46,13 @@ export const GameOver = () => {
         gap: 8,
       }}
     >
-      {/* <BannerAd
+      <BannerAd
         unitId={adUnitId}
         size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
         requestOptions={{
           requestNonPersonalizedAdsOnly: true,
         }}
-      /> */}
+      />
       <Text
         style={{
           fontSize: THEME.FONT_SIZES.XXL,

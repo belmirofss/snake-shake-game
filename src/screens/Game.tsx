@@ -74,13 +74,13 @@ export const Game = () => {
             alignItems: "center",
           }}
         >
-          {/* <BannerAd
+          <BannerAd
             unitId={adUnitId}
             size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
             requestOptions={{
               requestNonPersonalizedAdsOnly: true,
             }}
-          /> */}
+          />
           <View
             style={{
               ...THEME.SHADOWS.LEVEL_1,
