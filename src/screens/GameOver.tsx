@@ -8,6 +8,14 @@ import { Text, View } from "react-native";
 import { Button } from "../components/Button";
 import { Score } from "../components/Score";
 import { THEME } from "../theme";
+import {
+  BannerAd,
+  TestIds,
+  BannerAdSize,
+} from "react-native-google-mobile-ads";
+import { AD_BANNER_2 } from "../constants";
+
+const adUnitId = __DEV__ ? TestIds.BANNER : AD_BANNER_2;
 
 type ParamList = {
   Score: {
@@ -38,6 +46,13 @@ export const GameOver = () => {
         gap: 8,
       }}
     >
+      {/* <BannerAd
+        unitId={adUnitId}
+        size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+        requestOptions={{
+          requestNonPersonalizedAdsOnly: true,
+        }}
+      /> */}
       <Text
         style={{
           fontSize: THEME.FONT_SIZES.XXL,

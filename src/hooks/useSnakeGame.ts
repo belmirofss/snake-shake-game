@@ -3,7 +3,6 @@ import { Audio } from "expo-av";
 import { Point, Direction } from "../types";
 import { BOARD_SIZE, GAME_SPEED } from "../constants";
 import { CommonActions, useNavigation } from "@react-navigation/native";
-import { useAd } from "./useAd";
 
 const randomNumber = () => Math.floor(Math.random() * BOARD_SIZE);
 
@@ -37,7 +36,6 @@ export const useSnakeGame = () => {
   const rows = Array.from({ length: BOARD_SIZE }, () =>
     Array(BOARD_SIZE).fill(1)
   );
-  const { showAd} = useAd()
   const navigation = useNavigation();
   const forceUpdate = useForceUpdate();
   const snakePoints = useRef<Point[]>([
@@ -177,7 +175,6 @@ export const useSnakeGame = () => {
           ],
         })
       );
-      showAd()
       return;
     }
 

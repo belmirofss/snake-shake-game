@@ -4,13 +4,20 @@ import {
   Gesture,
   GestureDetector,
 } from "react-native-gesture-handler";
-import { BOARD_SIZE, BOARD_SQUARE_SIZE } from "../constants";
+import { AD_BANNER_1, BOARD_SIZE, BOARD_SQUARE_SIZE } from "../constants";
 import { THEME } from "../theme";
 import { Direction, Point } from "../types";
 import { useSnakeGame } from "../hooks/useSnakeGame";
 import { useIsFocused } from "@react-navigation/native";
 import { useEffect } from "react";
 import { Score } from "../components/Score";
+import {
+  BannerAd,
+  TestIds,
+  BannerAdSize,
+} from "react-native-google-mobile-ads";
+
+const adUnitId = __DEV__ ? TestIds.BANNER : AD_BANNER_1;
 
 export const Game = () => {
   const isFocused = useIsFocused();
@@ -67,9 +74,17 @@ export const Game = () => {
             alignItems: "center",
           }}
         >
+          {/* <BannerAd
+            unitId={adUnitId}
+            size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+            requestOptions={{
+              requestNonPersonalizedAdsOnly: true,
+            }}
+          /> */}
           <View
             style={{
               ...THEME.SHADOWS.LEVEL_1,
+              marginTop: 12,
               backgroundColor: THEME.COLORS.WHITE,
               borderWidth: 0.75,
               borderColor: THEME.COLORS.BLACK,
