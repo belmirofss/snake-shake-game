@@ -1,63 +1,25 @@
-import { useState, useReducer } from "react";
+import { useRef, useState } from "react";
 import { Point, Direction } from "../types";
-import { BOARD_SIZE } from "../constants";
+import { BOARD_SIZE, GAME_SPEED } from "../constants";
 
 const randomNumber = () => Math.floor(Math.random() * BOARD_SIZE);
 
-const snakeDirectionReducer = (
-  currentDirection: Direction,
-  newDirection: Direction
-) => {
-  let direction = currentDirection;
-
-  if (newDirection === Direction.LEFT) {
-    switch (currentDirection) {
-      case Direction.LEFT:
-        direction = Direction.DOWN;
-        break;
-      case Direction.UP:
-        direction = Direction.LEFT;
-        break;
-      case Direction.RIGHT:
-        direction = Direction.UP;
-        break;
-      case Direction.DOWN:
-        direction = Direction.RIGHT;
-        break;
-    }
-  }
-
-  if (newDirection === Direction.RIGHT) {
-    switch (currentDirection) {
-      case Direction.LEFT:
-        direction = Direction.UP;
-      case Direction.UP:
-        direction = Direction.RIGHT;
-      case Direction.RIGHT:
-        direction = Direction.DOWN;
-      case Direction.DOWN:
-        direction = Direction.LEFT;
-    }
-  }
-
-  return direction;
-};
+const useForceUpdate = () =>{
+  const [_, setValue] = useState(0);
+  return () => setValue(value => value + 1);
+}
 
 type Props = {
   onGameOver: () => void;
-  onScore: (score: number) => void;
+  onScore: () => void;
 };
 
 export const useSnakeGame = ({ onGameOver, onScore }: Props) => {
   const rows = Array.from({ length: BOARD_SIZE }, () =>
     Array(BOARD_SIZE).fill(1)
   );
-  const [score, setScore] = useState(0);
-  const [snakeDirection, updateSnakeDirection] = useReducer(
-    snakeDirectionReducer,
-    Direction.UP
-  );
-  const [snakePoints, setSnakePoints] = useState<Point[]>([
+  const forceUpdate = useForceUpdate();
+  const snakePoints = useRef<Point[]>([
     {
       column: 1,
       row: BOARD_SIZE - 4,
@@ -65,22 +27,24 @@ export const useSnakeGame = ({ onGameOver, onScore }: Props) => {
     { column: 1, row: BOARD_SIZE - 3 },
     { column: 1, row: BOARD_SIZE - 2 },
   ]);
-  const [fruit, setFruit] = useState<Point>({
+  const score = useRef(0);
+  const snakeDirection = useRef<Direction>(Direction.UP);
+  const fruit = useRef<Point>({
     column: -1,
     row: -1,
   });
 
   const isHead = (point: Point) =>
-    snakePoints[0].row === point.row && snakePoints[0].column === point.column;
+    snakePoints.current[0].row === point.row && snakePoints.current[0].column === point.column;
 
   const isBody = (point: Point) =>
-    !!snakePoints.find(
+    !!snakePoints.current.find(
       (item, index) =>
         item.row === point.row && item.column === point.column && index !== 0
     );
 
   const isFruit = (point: Point) =>
-    point.row === fruit.row && point.column === fruit.column;
+    point.row === fruit.current.row && point.column === fruit.current.column;
 
   const isSelfCollision = (point: Point) => isBody(point);
 
@@ -99,56 +63,85 @@ export const useSnakeGame = ({ onGameOver, onScore }: Props) => {
     const row = randomNumber();
     const column = randomNumber();
 
-    if (isHead({row, column}) || isBody({row, column})) {
-      spawnFruit()
+    if (isHead({ row, column }) || isBody({ row, column })) {
+      spawnFruit();
     }
 
-    setFruit({ row, column });
+    fruit.current = { row, column }
   };
 
   const eat = () => {
-    const lastTail = snakePoints[snakePoints.length - 1];
-    setSnakePoints([
-      ...snakePoints,
+    const lastTail = snakePoints.current[snakePoints.current.length - 1];
+    snakePoints.current = [
+      ...snakePoints.current,
       { column: lastTail.column, row: lastTail.row },
-    ]);
+    ]
   };
 
-  const getNewHeadPointPosition = () => {
-    const newHead = { ...snakePoints[0] };
+  const updateSnakeDirection = (newDirection: Direction) => {
+    let direction = snakeDirection.current;
 
-    if (snakeDirection === Direction.LEFT) {
-      newHead.column--;
-    } else if (snakeDirection === Direction.RIGHT) {
-      newHead.column++;
-    } else if (snakeDirection === Direction.UP) {
-      newHead.row--;
-    } else if (snakeDirection === Direction.DOWN) {
-      newHead.row++;
+    if (newDirection === Direction.LEFT) {
+      const directions = {
+        [Direction.LEFT]: Direction.DOWN,
+        [Direction.UP]: Direction.LEFT,
+        [Direction.RIGHT]: Direction.UP,
+        [Direction.DOWN]: Direction.RIGHT,
+      };
+
+      direction = directions[direction];
     }
 
-    return newHead;
+    if (newDirection === Direction.RIGHT) {
+      const directions = {
+        [Direction.LEFT]: Direction.UP,
+        [Direction.UP]: Direction.RIGHT,
+        [Direction.RIGHT]: Direction.DOWN,
+        [Direction.DOWN]: Direction.LEFT,
+      };
+
+      direction = directions[direction];
+    }
+
+    snakeDirection.current = direction;
   };
 
   const moveSnake = () => {
-    const newSnakePoints = snakePoints.map(point => {
-      if (snakeDirection === Direction.LEFT) {
-        point.column--;
-      } else if (snakeDirection === Direction.RIGHT) {
-        point.column++;
-      } else if (snakeDirection === Direction.UP) {
-        point.row--;
-      } else if (snakeDirection === Direction.DOWN) {
-        point.row++;
+    let previousPoint: Point | undefined;
+
+    const newSnakePoints = snakePoints.current.map((point, index) => {
+      const originalPoint = {... point }
+
+      if (index === 0) {
+        if (snakeDirection.current === Direction.LEFT) {
+          point.column--;
+        } else if (snakeDirection.current === Direction.RIGHT) {
+          point.column++;
+        } else if (snakeDirection.current === Direction.UP) {
+          point.row--;
+        } else if (snakeDirection.current === Direction.DOWN) {
+          point.row++;
+        }
+        
+      } else {
+        if (previousPoint) {
+          point.column = previousPoint.column
+          point.row = previousPoint.row
+        }
       }
-  
+      
+      previousPoint = originalPoint
+    
       return point;
-    })
-    setSnakePoints(newSnakePoints);
+    });
+    snakePoints.current = newSnakePoints
 
-    const newHeadPointPosition = newSnakePoints[0]
+    const newHeadPointPosition = newSnakePoints[0];
 
-    if (isBoundaryCollision(newHeadPointPosition) || isSelfCollision(newHeadPointPosition)) {
+    if (
+      isBoundaryCollision(newHeadPointPosition) ||
+      isSelfCollision(newHeadPointPosition)
+    ) {
       onGameOver();
       return;
     }
@@ -156,19 +149,21 @@ export const useSnakeGame = ({ onGameOver, onScore }: Props) => {
     if (isFruitCollision(newHeadPointPosition)) {
       eat();
       upScore();
-
       spawnFruit();
-      onScore(score);
+      onScore();
     }
+
+    forceUpdate();
+    setTimeout(() => moveSnake(), GAME_SPEED);
   };
 
-  const upScore = () => setScore((_score) => _score++);
+  const upScore = () => score.current = score.current + 1;
 
   return {
-    score,
+    score: score.current,
     rows,
     updateSnakeDirection,
-    moveSnake,
+    startSnake: () => moveSnake(),
     isHead,
     isBody,
     isFruit,

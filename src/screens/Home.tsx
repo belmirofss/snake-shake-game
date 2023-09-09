@@ -1,20 +1,14 @@
 import { useNavigation } from "@react-navigation/core";
-import React, { useEffect } from "react";
+import React from "react";
 import { View, Text, Image } from "react-native";
 import { Button } from "../components/Button";
 import { THEME } from "../theme";
 import LOGO from "../images/logo.png";
-import { useAd } from "../hooks/useAd";
 
 export const Home = () => {
   const navigation = useNavigation();
-  const { loadAd } = useAd();
 
   const startGameclick = () => navigation.navigate("Game");
-
-  useEffect(() => {
-    loadAd();
-  }, []);
 
   return (
     <View

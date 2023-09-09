@@ -1,8 +1,8 @@
 export enum Direction {
-  LEFT,
-  UP,
-  RIGHT,
-  DOWN,
+  LEFT = "LEFT",
+  UP = "UP",
+  RIGHT = "RIGHT",
+  DOWN = "DOWN",
 }
 
 export type Point = {
