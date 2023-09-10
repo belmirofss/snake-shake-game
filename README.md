@@ -1,4 +1,4 @@
-![SnakeShake Game Logo](https://i.imgur.com/J5CcVLm.png)
+<img src="https://i.imgur.com/nho8qoP.png" height=150 alt="SnakeShake Game" />
 
 # SnakeShake Game, powered by Expo
 
