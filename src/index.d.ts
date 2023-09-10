@@ -1,6 +1,7 @@
 export declare global {
     namespace ReactNavigation {
         interface RootParamList {
+            Home: undefined;
             GameOver: {
                 score: number
             };

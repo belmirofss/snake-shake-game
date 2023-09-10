@@ -1,8 +1,10 @@
 import { useRef, useState } from "react";
 import { Audio } from "expo-av";
+import * as Haptics from 'expo-haptics';
 import { Point, Direction } from "../types";
 import { BOARD_SIZE, GAME_SPEED } from "../constants";
 import { CommonActions, useNavigation } from "@react-navigation/native";
+import { useScoreRecord } from "./useScoreRecord";
 
 const randomNumber = () => Math.floor(Math.random() * BOARD_SIZE);
 
@@ -37,6 +39,7 @@ export const useSnakeGame = () => {
     Array(BOARD_SIZE).fill(1)
   );
   const navigation = useNavigation();
+  const { saveRecord, MAX_SCORE } = useScoreRecord();
   const forceUpdate = useForceUpdate();
   const snakePoints = useRef<Point[]>([
     {
@@ -161,7 +164,9 @@ export const useSnakeGame = () => {
       isBoundaryCollision(newHeadPointPosition) ||
       isSelfCollision(newHeadPointPosition)
     ) {
+      saveRecord(score.current)
       playGameOverSound();
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy)
       navigation.dispatch(
         CommonActions.reset({
           index: 1,
@@ -183,9 +188,25 @@ export const useSnakeGame = () => {
       upScore();
       playEatFruitSound();
       spawnFruit();
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
     }
 
     forceUpdate();
+
+    if (score.current === MAX_SCORE) {
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 1,
+          routes: [
+            {
+              name: "End",
+            },
+          ],
+        })
+      );
+      return;
+    }
+
     setTimeout(() => moveSnake(), GAME_SPEED);
   };
 
