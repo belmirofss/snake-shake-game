@@ -28,13 +28,14 @@
     },
     "android": {
       "package": "com.yabcompany.snakeshakegame",
-      "versionCode": 2,
+      "versionCode": 3,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffde59"
       },
       "permissions": [
-        "com.google.android.gms.permission.AD_ID"
+        "com.google.android.gms.permission.AD_ID",
+        "android.permission.RECORD_AUDIO"
       ]
     },
     "web": {
