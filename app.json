@@ -2,7 +2,7 @@
   "expo": {
     "name": "SnakeShake Game",
     "slug": "snake-shake-game",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "orientation": "portrait",
     "androidStatusBar": {
       "hidden": true
@@ -28,7 +28,7 @@
     },
     "android": {
       "package": "com.yabcompany.snakeshakegame",
-      "versionCode": 3,
+      "versionCode": 4,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffde59"
